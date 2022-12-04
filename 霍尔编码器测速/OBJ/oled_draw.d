@@ -1,0 +1,11 @@
+..\obj\oled_draw.o: ..\oledlib\oled_draw.c
+..\obj\oled_draw.o: ..\oledlib\oled_draw.h
+..\obj\oled_draw.o: ..\oledlib\oled_basic.h
+..\obj\oled_draw.o: ..\oledlib\oled_color.h
+..\obj\oled_draw.o: D:\APP\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\oled_draw.o: ..\oledlib\oled_buffer.h
+..\obj\oled_draw.o: ..\oledlib\oled_config.h
+..\obj\oled_draw.o: D:\APP\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\oled_draw.o: D:\APP\Keil5\ARM\ARMCC\Bin\..\include\math.h
+..\obj\oled_draw.o: ..\oledlib\oled_bmp.h
+..\obj\oled_draw.o: ..\oledlib\oled_font.h
