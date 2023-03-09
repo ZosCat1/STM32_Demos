@@ -7,37 +7,37 @@
 #include "inv_mpu_dmp_motion_driver.h" 
 	
 	u8 t=0,report=1;	
-	float pitch,roll,yaw; 		//Å·À­½Ç
-	short aacx,aacy,aacz;		//¼ÓËÙ¶È´«¸ÐÆ÷Ô­Ê¼Êý¾Ý
-	short gyrox,gyroy,gyroz;	//ÍÓÂÝÒÇÔ­Ê¼Êý¾Ý
-	short temp;					//ÎÂ¶È	
+	float pitch,roll,yaw; 		//Å·ï¿½ï¿½ï¿½ï¿½
+	short aacx,aacy,aacz;		//ï¿½ï¿½ï¿½Ù¶È´ï¿½ï¿½ï¿½ï¿½ï¿½Ô­Ê¼ï¿½ï¿½ï¿½ï¿½
+	short gyrox,gyroy,gyroz;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­Ê¼ï¿½ï¿½ï¿½ï¿½
+	short temp;					//ï¿½Â¶ï¿½	
 
-
+//test
 void usart1_send_char(u8 c)
 {   	
-	while(USART_GetFlagStatus(USART1,USART_FLAG_TC)==RESET); //Ñ­»··¢ËÍ,Ö±µ½·¢ËÍÍê±Ï   
+	while(USART_GetFlagStatus(USART1,USART_FLAG_TC)==RESET); //Ñ­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½   
 	USART_SendData(USART1,c);  
 } 
-//´«ËÍÊý¾Ý¸øÄäÃûËÄÖáÉÏÎ»»úÈí¼þ(V2.6°æ±¾)
-//fun:¹¦ÄÜ×Ö. 0XA0~0XAF
-//data:Êý¾Ý»º´æÇø,×î¶à28×Ö½Ú!!
-//len:dataÇøÓÐÐ§Êý¾Ý¸öÊý
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(V2.6ï¿½æ±¾)
+//fun:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½. 0XA0~0XAF
+//data:ï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½28ï¿½Ö½ï¿½!!
+//len:dataï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½
 void usart1_niming_report(u8 fun,u8*data,u8 len)
 {
 	u8 send_buf[32];
 	u8 i;
-	if(len>28)return;	//×î¶à28×Ö½ÚÊý¾Ý 
-	send_buf[len+3]=0;	//Ð£ÑéÊýÖÃÁã
+	if(len>28)return;	//ï¿½ï¿½ï¿½28ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+	send_buf[len+3]=0;	//Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	send_buf[0]=0X88;	//Ö¡Í·
-	send_buf[1]=fun;	//¹¦ÄÜ×Ö
-	send_buf[2]=len;	//Êý¾Ý³¤¶È
-	for(i=0;i<len;i++)send_buf[3+i]=data[i];			//¸´ÖÆÊý¾Ý
-	for(i=0;i<len+3;i++)send_buf[len+3]+=send_buf[i];	//¼ÆËãÐ£ÑéºÍ	
-	for(i=0;i<len+4;i++)usart1_send_char(send_buf[i]);	//·¢ËÍÊý¾Ýµ½´®¿Ú1 
+	send_buf[1]=fun;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	send_buf[2]=len;	//ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½
+	for(i=0;i<len;i++)send_buf[3+i]=data[i];			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	for(i=0;i<len+3;i++)send_buf[len+3]+=send_buf[i];	//ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½	
+	for(i=0;i<len+4;i++)usart1_send_char(send_buf[i]);	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½1 
 }
-//·¢ËÍ¼ÓËÙ¶È´«¸ÐÆ÷Êý¾ÝºÍÍÓÂÝÒÇÊý¾Ý
-//aacx,aacy,aacz:x,y,zÈý¸ö·½ÏòÉÏÃæµÄ¼ÓËÙ¶ÈÖµ
-//gyrox,gyroy,gyroz:x,y,zÈý¸ö·½ÏòÉÏÃæµÄÍÓÂÝÒÇÖµ
+//ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ù¶È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//aacx,aacy,aacz:x,y,zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ù¶ï¿½Öµ
+//gyrox,gyroy,gyroz:x,y,zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 void mpu6050_send_data(short aacx,short aacy,short aacz,short gyrox,short gyroy,short gyroz)
 {
 	u8 tbuf[12]; 
@@ -53,19 +53,19 @@ void mpu6050_send_data(short aacx,short aacy,short aacz,short gyrox,short gyroy,
 	tbuf[9]=gyroy&0XFF;
 	tbuf[10]=(gyroz>>8)&0XFF;
 	tbuf[11]=gyroz&0XFF;
-	usart1_niming_report(0XA1,tbuf,12);//×Ô¶¨ÒåÖ¡,0XA1
+	usart1_niming_report(0XA1,tbuf,12);//ï¿½Ô¶ï¿½ï¿½ï¿½Ö¡,0XA1
 }	
-//Í¨¹ý´®¿Ú1ÉÏ±¨½áËãºóµÄ×ËÌ¬Êý¾Ý¸øµçÄÔ
-//aacx,aacy,aacz:x,y,zÈý¸ö·½ÏòÉÏÃæµÄ¼ÓËÙ¶ÈÖµ
-//gyrox,gyroy,gyroz:x,y,zÈý¸ö·½ÏòÉÏÃæµÄÍÓÂÝÒÇÖµ
-//roll:ºá¹ö½Ç.µ¥Î»0.01¶È¡£ -18000 -> 18000 ¶ÔÓ¦ -180.00  ->  180.00¶È
-//pitch:¸©Ñö½Ç.µ¥Î» 0.01¶È¡£-9000 - 9000 ¶ÔÓ¦ -90.00 -> 90.00 ¶È
-//yaw:º½Ïò½Ç.µ¥Î»Îª0.1¶È 0 -> 3600  ¶ÔÓ¦ 0 -> 360.0¶È
+//Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½Ï±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½Ý¸ï¿½ï¿½ï¿½ï¿½ï¿½
+//aacx,aacy,aacz:x,y,zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ù¶ï¿½Öµ
+//gyrox,gyroy,gyroz:x,y,zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+//roll:ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½Î»0.01ï¿½È¡ï¿½ -18000 -> 18000 ï¿½ï¿½Ó¦ -180.00  ->  180.00ï¿½ï¿½
+//pitch:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½Î» 0.01ï¿½È¡ï¿½-9000 - 9000 ï¿½ï¿½Ó¦ -90.00 -> 90.00 ï¿½ï¿½
+//yaw:ï¿½ï¿½ï¿½ï¿½ï¿½.ï¿½ï¿½Î»Îª0.1ï¿½ï¿½ 0 -> 3600  ï¿½ï¿½Ó¦ 0 -> 360.0ï¿½ï¿½
 void usart1_report_imu(short aacx,short aacy,short aacz,short gyrox,short gyroy,short gyroz,short roll,short pitch,short yaw)
 {
 	u8 tbuf[28]; 
 	u8 i;
-	for(i=0;i<28;i++)tbuf[i]=0;//Çå0
+	for(i=0;i<28;i++)tbuf[i]=0;//ï¿½ï¿½0
 	tbuf[0]=(aacx>>8)&0XFF;
 	tbuf[1]=aacx&0XFF;
 	tbuf[2]=(aacy>>8)&0XFF;
@@ -84,15 +84,15 @@ void usart1_report_imu(short aacx,short aacy,short aacz,short gyrox,short gyroy,
 	tbuf[21]=pitch&0XFF;
 	tbuf[22]=(yaw>>8)&0XFF;
 	tbuf[23]=yaw&0XFF;
-	usart1_niming_report(0XAF,tbuf,28);//·É¿ØÏÔÊ¾Ö¡,0XAF
+	usart1_niming_report(0XAF,tbuf,28);//ï¿½É¿ï¿½ï¿½ï¿½Ê¾Ö¡,0XAF
 }  
 
 
 
-	float pitch,roll,yaw; 		//Å·À­½Ç
-	short aacx,aacy,aacz;		//¼ÓËÙ¶È´«¸ÐÆ÷Ô­Ê¼Êý¾Ý
-	short gyrox,gyroy,gyroz;	//ÍÓÂÝÒÇÔ­Ê¼Êý¾Ý
-	short temp;					//ÎÂ¶È	
+	float pitch,roll,yaw; 		//Å·ï¿½ï¿½ï¿½ï¿½
+	short aacx,aacy,aacz;		//ï¿½ï¿½ï¿½Ù¶È´ï¿½ï¿½ï¿½ï¿½ï¿½Ô­Ê¼ï¿½ï¿½ï¿½ï¿½
+	short gyrox,gyroy,gyroz;	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­Ê¼ï¿½ï¿½ï¿½ï¿½
+	short temp;					//ï¿½Â¶ï¿½	
 
 
 int main(void)
@@ -100,8 +100,8 @@ int main(void)
 LED_Init();
 delay_init(); 
 OLED_Init();
-uart_init(500000);	 	//´®¿Ú³õÊ¼»¯Îª500000
-report=1;//Ä¬ÈÏ¿ªÆôÉÏ±¨
+uart_init(500000);	 	//ï¿½ï¿½ï¿½Ú³ï¿½Ê¼ï¿½ï¿½Îª500000
+report=1;//Ä¬ï¿½Ï¿ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	
 	MPU_Init();	
 OLED_Clear();
@@ -125,43 +125,43 @@ OLED_Clear();
 
 				if(mpu_dmp_get_data(&pitch,&roll,&yaw)==0)
 		{ 
-			temp=MPU_Get_Temperature();	//µÃµ½ÎÂ¶ÈÖµ
-			MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//µÃµ½¼ÓËÙ¶È´«¸ÐÆ÷Êý¾Ý
-			MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//µÃµ½ÍÓÂÝÒÇÊý¾Ý
-			if(report)mpu6050_send_data(aacx,aacy,aacz,gyrox,gyroy,gyroz);//ÓÃ×Ô¶¨ÒåÖ¡·¢ËÍ¼ÓËÙ¶ÈºÍÍÓÂÝÒÇÔ­Ê¼Êý¾Ý
+			temp=MPU_Get_Temperature();	//ï¿½Ãµï¿½ï¿½Â¶ï¿½Öµ
+			MPU_Get_Accelerometer(&aacx,&aacy,&aacz);	//ï¿½Ãµï¿½ï¿½ï¿½ï¿½Ù¶È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			MPU_Get_Gyroscope(&gyrox,&gyroy,&gyroz);	//ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			if(report)mpu6050_send_data(aacx,aacy,aacz,gyrox,gyroy,gyroz);//ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ù¶Èºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­Ê¼ï¿½ï¿½ï¿½ï¿½
 			if(report)usart1_report_imu(aacx,aacy,aacz,gyrox,gyroy,gyroz,(int)(roll*100),(int)(pitch*100),(int)(yaw*10));
 
 				if(temp<0)
 				{
-					OLED_ShowChar(0,0,'-',6);		//ÏÔÊ¾¸ººÅ
-					temp=-temp;		//×ªÎªÕýÊý
-				}else OLED_ShowChar(0,0,' ',6);		//È¥µô¸ººÅ 
-				OLED_Num4(4,0,temp/100);		//ÏÔÊ¾ÕûÊý²¿·Ö	    
-//				OLED_Num3(10,0,temp%10);		//ÏÔÊ¾Ð¡Êý²¿·Ö 
+					OLED_ShowChar(0,0,'-',6);		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+					temp=-temp;		//×ªÎªï¿½ï¿½ï¿½ï¿½
+				}else OLED_ShowChar(0,0,' ',6);		//È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+				OLED_Num4(4,0,temp/100);		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	    
+//				OLED_Num3(10,0,temp%10);		//ï¿½ï¿½Ê¾Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 				temp=pitch*10;
 				if(temp<0)
 				{
-					OLED_ShowChar(0,0,'-',6);		//ÏÔÊ¾¸ººÅ
-					temp=-temp;		//×ªÎªÕýÊý
-				}else OLED_ShowChar(0,0,' ',6);		//È¥µô¸ººÅ 
-				OLED_Num4(4,0,temp/10);		//ÏÔÊ¾ÕûÊý²¿·Ö	    
-//				OLED_Num3(10,0,temp%10);		//ÏÔÊ¾Ð¡Êý²¿·Ö 
+					OLED_ShowChar(0,0,'-',6);		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+					temp=-temp;		//×ªÎªï¿½ï¿½ï¿½ï¿½
+				}else OLED_ShowChar(0,0,' ',6);		//È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+				OLED_Num4(4,0,temp/10);		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	    
+//				OLED_Num3(10,0,temp%10);		//ï¿½ï¿½Ê¾Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 				temp=roll*10;
 				if(temp<0)
 				{
-					OLED_ShowChar(0,2,'-',6);		//ÏÔÊ¾¸ººÅ
-					temp=-temp;		//×ªÎªÕýÊý
-				}else OLED_ShowChar(0,2,' ',6);		//È¥µô¸ººÅ 
-				OLED_Num4(4,2,temp/10);		//ÏÔÊ¾ÕûÊý²¿·Ö	    
-//				OLED_Num3(10,2,temp%10);		//ÏÔÊ¾Ð¡Êý²¿·Ö 
+					OLED_ShowChar(0,2,'-',6);		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+					temp=-temp;		//×ªÎªï¿½ï¿½ï¿½ï¿½
+				}else OLED_ShowChar(0,2,' ',6);		//È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+				OLED_Num4(4,2,temp/10);		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	    
+//				OLED_Num3(10,2,temp%10);		//ï¿½ï¿½Ê¾Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 				temp=yaw*10;
 				if(temp<0)
 				{
-					OLED_ShowChar(0,4,'-',6);		//ÏÔÊ¾¸ººÅ
-					temp=-temp;		//×ªÎªÕýÊý
-				}else OLED_ShowChar(0,4,' ',6);		//È¥µô¸ººÅ 
-				OLED_Num4(4,4,temp/10);		//ÏÔÊ¾ÕûÊý²¿·Ö	    
-//				OLED_Num3(10,4,temp%10);		//ÏÔÊ¾Ð¡Êý²¿·Ö  
+					OLED_ShowChar(0,4,'-',6);		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½
+					temp=-temp;		//×ªÎªï¿½ï¿½ï¿½ï¿½
+				}else OLED_ShowChar(0,4,' ',6);		//È¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+				OLED_Num4(4,4,temp/10);		//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	    
+//				OLED_Num3(10,4,temp%10);		//ï¿½ï¿½Ê¾Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½  
 				t=0;
 
 
